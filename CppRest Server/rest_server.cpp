@@ -15,7 +15,6 @@ void handle_get(const http_request& request)
     http_response response;
 
     utility::string_t path = request.request_uri().path();
-    //std::cout << path << std::endl;
     HTTP_Response *html_response = handle_request(path);
     if(html_response->status_code == "200")
         response.set_status_code(status_codes::OK);
