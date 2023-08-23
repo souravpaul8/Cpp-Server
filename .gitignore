@@ -1,3 +1,9 @@
 .vscode/settings.json
 CppRest Server/restserver
 Simple Server/server
+Load Generator copy/Dockerfile
+.gitignore
+.gitignore
+Load Generator copy/Makefile
+Load Generator copy/simple_gen.c
+Load Generator copy/load_gen.c
