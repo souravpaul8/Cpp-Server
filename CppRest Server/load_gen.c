@@ -13,7 +13,7 @@
 
 
 int time_up;
-FILE *log_file;
+//FILE *log_file;
 
 // user info struct
 struct user_info {
@@ -134,8 +134,8 @@ void *user_function(void *arg) {
 
   /* exit thread */
   info->total_rtt=info->total_rtt/info->total_count;
-  fprintf(log_file, "User #%d finished\n", info->id);
-  fflush(log_file);
+  //fprintf(log_file, "User #%d finished\n", info->id);
+  //fflush(log_file);
   pthread_exit(NULL);
 }
 
@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
   printf("Test Duration: %d s\n", test_duration);
 
   /* open log file */
-  log_file = fopen("load_gen.log", "w");
+  //log_file = fopen("load_gen.log", "w");
 
   pthread_t threads[user_count];
   struct user_info info[user_count];
@@ -186,13 +186,13 @@ int main(int argc, char *argv[]) {
     /* TODO: create user thread */
     pthread_create(&threads[i],NULL,user_function,&info[i]);
 
-    fprintf(log_file, "Created thread %d\n", i);
+    //fprintf(log_file, "Created thread %d\n", i);
   }
 
   /* TODO: wait for test duration */
   sleep(test_duration);
 
-  fprintf(log_file, "Woke up\n");
+  //fprintf(log_file, "Woke up\n");
 
   /* end timer */
   time_up = 1;
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
   printf("Ending program\n");
 
   /* close log file */
-  fclose(log_file);
+  //fclose(log_file);
 
   return 0;
 }
