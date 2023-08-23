@@ -191,7 +191,7 @@ HTTP_Response *handle_request(string path) {
 
   response->HTTP_version = "1.0";
 
-  std::cout << path << std::endl;
+  //std::cout << path << std::endl;
 
   if (htmlMap.find(path) != htmlMap.end()) // requested path exists
   {
