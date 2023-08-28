@@ -56,7 +56,7 @@ void *user_function(void *arg) {
   info->total_rtt=0;
 
   char* requests[] = {" / "," /apart1/ "," /apart2/ "," /apart1/flat11/ ", " /apart1/flat12/",
-                      " /apart2/flat21/ "," /apart3/flat31/"," /apart3/flat32/ "};
+                      " /apart2/flat21/ "," /apart3/flat31/ "," /apart3/flat32/ "};
 
   
   server=gethostbyname(info->hostname);
@@ -114,8 +114,7 @@ void *user_function(void *arg) {
     else{
       info->total_count++;
     }
-
-    
+  
     /* TODO: close socket */
     close(sockfd);
 
