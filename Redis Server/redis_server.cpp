@@ -1,30 +1,41 @@
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
+#include "redis_repository.h"
 
 using namespace web;
 using namespace web::http;
 using namespace web::http::experimental::listener;
 
-const utility::string_t SERVER_URL = U("http://localhost:5000");
+const utility::string_t SERVER_URL = U("http://127.0.0.1:5005");
 
 void handle_get(const http_request& request)
 {
 
     utility::string_t path = request.request_uri().path();
 
-    std::string response = "<!DOCTYPE html> <html lang=\"en\">\
-                        <html>\
-                        <head>\
-                            <title>Hello Sourav</title>\
-                        </head>\
-                        <body>\
-                            <p>Hello Sourav</p>\
-                        </body>\
-                        </html>";
+    redis_data_repository repository;
+    // try{
+    //     repository.storeData();
+    // } catch (std::exception &e) {
+    //     std::cout << "Redis Store: EXCEPTION CAUGHT: " << e.what() << std::endl;
+    // }
+    web::json::value response;
+    try {
+        response = repository.getData();
+    } catch (std::exception &e) {
+        std::cout << "Redis Get: EXCEPTION CAUGHT: " << e.what() << std::endl;
+    }
+    
+    utility::string_t responseString;
+    try{
+        responseString = response.serialize();
+    } catch (std::exception &e) {
+        std::cout << "Redis Serialize: EXCEPTION CAUGHT: " << e.what() << std::endl;
+    }
 
     http_response httpResponse(status_codes::OK);
-    httpResponse.headers().set_content_type(U("text/html"));
-    httpResponse.set_body(utility::conversions::to_string_t(response));
+    httpResponse.headers().set_content_type(U("application/json"));
+    httpResponse.set_body(response);
     request.reply(httpResponse);
     //std::cout << "Connected" << std::endl;
 }
