@@ -217,7 +217,8 @@ int main(int argc, char *argv[]) {
   float wait_time_s=time_diff(&end,&start);
   throughput=avg_count/wait_time_s;//to do correct formula
   avg_rtt=avg_rtt/user_count;
-  printf("average throughput is %f avg rtt: %f \n",throughput,avg_rtt);
+  printf("average throughput : %f \n",throughput);
+  printf("avg rtt : %f \n",avg_rtt);
  
   printf("Ending program\n");
 
