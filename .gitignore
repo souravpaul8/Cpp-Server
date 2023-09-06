@@ -7,3 +7,10 @@ Load Generator copy/Dockerfile
 Load Generator copy/Makefile
 Load Generator copy/simple_gen.c
 Load Generator copy/load_gen.c
+CppRest Server/load_gen
+CppRest Server/rest_server
+Load Generator/load_gen
+Redis Server/redis_server
+Simple Server/server
+CppRest-Socket Server/server
+Simple Server/server

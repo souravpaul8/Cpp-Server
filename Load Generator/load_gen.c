@@ -55,8 +55,8 @@ void *user_function(void *arg) {
   info->total_count=0;
   info->total_rtt=0;
 
-  char* requests[] = {" / "," /apart1/ "," /apart2/ "," /apart1/flat11/ ", " /apart1/flat12/",
-                      " /apart2/flat21/ "," /apart3/flat31/"," /apart3/flat32/ "};
+  char* requests[] = {" /index.html "," /apart1/index.html "," /apart2/index.html "," /apart1/flat11/index.html ", " /apart1/flat12/index.html ",
+                      " /apart2/flat21/index.html "," /apart3/flat31/index.html "," /apart3/flat32/index.html "};
 
   
   server=gethostbyname(info->hostname);
@@ -104,6 +104,8 @@ void *user_function(void *arg) {
     	continue;
     }
 
+    //printf("%s\n", buffer);
+
     /* TODO: read reply from server */
     bzero(buffer, 256);
     n = read(sockfd, buffer, 255);
@@ -115,7 +117,8 @@ void *user_function(void *arg) {
       info->total_count++;
     }
 
-    
+    //printf("%s\n", buffer);
+  
     /* TODO: close socket */
     close(sockfd);
 
@@ -214,7 +217,8 @@ int main(int argc, char *argv[]) {
   float wait_time_s=time_diff(&end,&start);
   throughput=avg_count/wait_time_s;//to do correct formula
   avg_rtt=avg_rtt/user_count;
-  printf("average throughput is %f avg rtt: %f \n",throughput,avg_rtt);
+  printf("average throughput : %f \n",throughput);
+  printf("avg rtt : %f \n",avg_rtt);
  
   printf("Ending program\n");
 
