@@ -10,7 +10,7 @@
 #include <pthread.h>
 #include <queue>
 
-#include "http_server.hh"
+#include "redis_repository.h"
 
 #define THREAD_POOL_SIZE 50
 #define MAX_QUEUE_SIZE 10000
@@ -60,6 +60,14 @@ void *start_function(void *arg)
   char buffer[256];
   int n;
 
+  redis_data_repository repository;
+  web::json::value response;
+  try {
+        response = repository.getData();
+    } catch (std::exception &e) {
+        std::cout << "Redis Get: EXCEPTION CAUGHT: " << e.what() << std::endl;
+  }
+
   // ...thread processing...
   bzero(buffer, 256);
   n = read(my_arg, buffer, 255);
@@ -69,9 +77,8 @@ void *start_function(void *arg)
     close(my_arg);
     return arg;
   }
-  // cout << "Here is the message: \n"
-  //      << buffer << endl;
 
+  
   HTTP_Response *response = handle_request(buffer);
 
   string tosend = response->get_string();

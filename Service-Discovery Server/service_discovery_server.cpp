@@ -8,8 +8,21 @@ using namespace web::http::experimental::listener;
 
 const utility::string_t SERVER_URL = U("http://localhost:5001");
 
+void getTimestamp(char *timestamp, int timestampSize) {
+    struct timeval tv;
+    struct tm *tm_info;
+
+    gettimeofday(&tv, NULL);
+    tm_info = localtime(&tv.tv_sec);
+
+    snprintf(timestamp, timestampSize, "%02d:%02d:%02d.%06ld", 
+        tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec, tv.tv_usec);
+}
+
 void handle_get(const http_request& request)
 {
+    char timestampStart[20]; // Adjust the size as needed
+    getTimestamp(timestampStart, sizeof(timestampStart));
 
     utility::string_t path = request.request_uri().path();
     std::vector<utility::string_t> segments;
@@ -17,9 +30,10 @@ void handle_get(const http_request& request)
     //std::string pathString = utility::conversions::to_utf8string(path);
     //std::cout << segments[1] << std::endl;
     std::string message;
+    std::string token;
     //std::cout << message.length() << std::endl;
 
-    if (segments.size() > 1) {
+    if (segments.size() > 2) {
         if (segments[1] == "ausf") {
             message = "http://localhost:5001";
         } else if (segments[1] == "redis") {
@@ -27,6 +41,7 @@ void handle_get(const http_request& request)
         } else {
             std::cout << "The path does not match any segment" << std::endl;
         }
+        token = segments[2];
     } else {
         std::cout << "The path does not contain enough segments." << std::endl;
     }
@@ -34,6 +49,7 @@ void handle_get(const http_request& request)
 
     json::value response;
     response[U("message")] = json::value::string(U(message));
+    response[U("tokenValue")] = json::value::string(U(token));
 
     utility::string_t responseString = response.serialize();
 
@@ -45,8 +61,14 @@ void handle_get(const http_request& request)
 
     httpResponse.headers().set_content_type(U("application/json"));
     httpResponse.set_body(responseString);
+
+    char timestampEnd[20];
+    getTimestamp(timestampEnd, sizeof(timestampEnd));
+    httpResponse.headers().add(U("discovery_begin_time"),U(timestampStart));
+    httpResponse.headers().add(U("discovery_end_time"),U(timestampEnd));
+
     request.reply(httpResponse);
-}
+    }
 
 int main()
 {

@@ -27,7 +27,7 @@ int port = 6379;
 //     return;
 // }
 
-web::json::value redis_data_repository::getData() {
+web::json::value redis_data_repository::getData(std::string token) {
     struct timeval timeout = { 1, 500000 }; // 1.5 seconds
     redisContext *c = redisConnectWithTimeout(hostname, port, timeout);
     if (c == NULL || (c)->err) {
@@ -45,6 +45,7 @@ web::json::value redis_data_repository::getData() {
     reply = (redisReply *)redisCommand(c,"GET %s","foo");
     web::json::value temp1;
     temp1[U("Message")] = web::json::value::string(reply->str);
+    temp1[U("tokenValue")] = web::json::value::string(token);
     // printf("GET %s \t\t| ","foo");
     // printf("%s\n",reply->str);
     freeReplyObject(reply);
@@ -52,7 +53,7 @@ web::json::value redis_data_repository::getData() {
     return temp1;
 }
 
-void redis_data_repository::storeData() {
+web::json::value redis_data_repository::storeData(std::string token) {
     struct timeval timeout = { 1, 500000 }; // 1.5 seconds
     redisContext *c = redisConnectWithTimeout(hostname, port, timeout);
     if (c == NULL || (c)->err) {
@@ -67,7 +68,9 @@ void redis_data_repository::storeData() {
     redisReply *reply;
     reply = (redisReply *)redisCommand(c,"SET %s %s", "foo", "hello world");
     //printf("SET %s %s \t| %s\n", "foo", "hello world", reply->str);
+    web::json::value temp1;
+    temp1[U("token")] = web::json::value::string(token);
     freeReplyObject(reply);
     redisFree(c);
-    return;
+    return temp1;
 }

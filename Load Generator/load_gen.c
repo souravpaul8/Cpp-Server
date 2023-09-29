@@ -10,7 +10,13 @@
 
 #include <pthread.h>
 #include <sys/time.h>
+#include <signal.h>
+#include <time.h>
 
+FILE *log_file;
+int token = 0;
+pthread_mutex_t tokenMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t fileMutex = PTHREAD_MUTEX_INITIALIZER;
 
 int time_up;
 //FILE *log_file;
@@ -41,13 +47,26 @@ float time_diff(struct timeval *t2, struct timeval *t1) {
   return (t2->tv_sec - t1->tv_sec) + (t2->tv_usec - t1->tv_usec) / 1e6;
 }
 
+void getTimestamp(char *timestamp, int timestampSize) {
+    struct timeval tv;
+    struct tm *tm_info;
+
+    gettimeofday(&tv, NULL);
+    tm_info = localtime(&tv.tv_sec);
+
+    snprintf(timestamp, timestampSize, "%02d:%02d:%02d.%06ld", 
+        tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec, tv.tv_usec);
+}
+
 // user thread function
 void *user_function(void *arg) {
   /* get user info */
   struct user_info *info = (struct user_info *)arg;
 
   int sockfd, n,num;
-  char buffer[256];
+  char buffer[1024];
+  char timestampStart[20];
+  char timestampEnd[20]; // Adjust the size as needed
   struct timeval start, end;
 
   struct sockaddr_in serv_addr;
@@ -55,24 +74,23 @@ void *user_function(void *arg) {
   info->total_count=0;
   info->total_rtt=0;
 
-  char* requests[] = {" /index.html "," /apart1/index.html "," /apart2/index.html "," /apart1/flat11/index.html ", " /apart1/flat12/index.html ",
-                      " /apart2/flat21/index.html "," /apart3/flat31/index.html "," /apart3/flat32/index.html "};
+  char* requests[] = {"/index.html ","/apart1/index.html ","/apart2/index.html ","/apart1/flat11/index.html ", "/apart1/flat12/index.html ",
+                      "/apart2/flat21/index.html ","/apart3/flat31/index.html ","/apart3/flat32/index.html "};
 
   
   server=gethostbyname(info->hostname);
-    if(server== NULL){
-      error("No such host");
-    }
-    bzero((char *)&serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    bzero((char *)&serv_addr.sin_addr.s_addr, sizeof(serv_addr.sin_addr.s_addr));
-    serv_addr.sin_port = htons(info->portno);
-    
-    
+  if(server== NULL){
+    error("No such host");
+  }
+  bzero((char *)&serv_addr, sizeof(serv_addr));
+  serv_addr.sin_family = AF_INET;
+  bzero((char *)&serv_addr.sin_addr.s_addr, sizeof(serv_addr.sin_addr.s_addr));
+  serv_addr.sin_port = htons(info->portno);
 
   while (1) {
     /* start timer */
     gettimeofday(&start, NULL);
+    getTimestamp(timestampStart, sizeof(timestampStart));
     //printf("user id is %d %s %f\n",info->id,info->hostname,info->think_time);
 
     /* TODO: create socket */
@@ -89,9 +107,17 @@ void *user_function(void *arg) {
     	continue;
     }
 
-    bzero(buffer, 256);
+    char tokenString[20];
+    pthread_mutex_lock(&tokenMutex);
+    token++;
+    sprintf(tokenString, "%d",token);
+    pthread_mutex_unlock(&tokenMutex);
+
+    bzero(buffer, 1024);
     //strcpy(buffer,"GET /apart2/ HTTP/1.0\n");
     strcpy(buffer,"GET");
+    strcat(buffer, " /");
+    strcat(buffer, tokenString);
     num = (rand() % (8));
     strcat(buffer,requests[num]);
     strcat(buffer,"HTTP/1.0\r\n");
@@ -107,16 +133,47 @@ void *user_function(void *arg) {
     //printf("%s\n", buffer);
 
     /* TODO: read reply from server */
-    bzero(buffer, 256);
-    n = read(sockfd, buffer, 255);
-    if (n<= 0){
+    bzero(buffer, 1024);
+    
+    char fileBuffer[4096];
+    strcat(fileBuffer, "======================================\n");
+    strcat(fileBuffer, "token: ");
+    strcat(fileBuffer, tokenString);
+    strcat(fileBuffer, "\n");
+    //printf("%s\n", tokenString);
+    while((n = read(sockfd, buffer, sizeof(buffer))) > 0) {
+        strncat(fileBuffer, buffer, n);
+        // Check if the headerBuffer is getting too large, and break the loop if necessary
+        if (strlen(fileBuffer) >= 4096 - 1) {
+            printf("fileBuffer is full, breaking the loop\n");
+            break;
+        }
+    }
+    getTimestamp(timestampEnd, sizeof(timestampEnd));
+    strcat(fileBuffer, "\n");
+    strcat(fileBuffer, "request_begin_time: ");
+    strcat(fileBuffer, timestampStart);
+    strcat(fileBuffer, "\n");
+    strcat(fileBuffer, "request_end_time: ");
+    strcat(fileBuffer, timestampEnd);
+    strcat(fileBuffer, "\n");
+    strcat(fileBuffer, "======================================\n");
+
+    pthread_mutex_lock(&fileMutex);
+    fprintf(log_file, "%s \n", fileBuffer);
+    fflush(log_file);
+    pthread_mutex_unlock(&fileMutex);
+    bzero(fileBuffer, 4096);
+    //printf("buffer:%s \t %s \n", buffer, tokenString);
+    
+    if (n< 0){
       error("ERROR reading from socket");
       printf("Error at read\n");
     }
     else{
       info->total_count++;
     }
-
+    //fprintf(log_file, "User #%d finished\n", info->id);
     //printf("%s\n", buffer);
   
     /* TODO: close socket */
@@ -169,9 +226,13 @@ int main(int argc, char *argv[]) {
   printf("User Count: %d\n", user_count);
   printf("Think Time: %f s\n", think_time);
   printf("Test Duration: %d s\n", test_duration);
-
+  
   /* open log file */
-  //log_file = fopen("load_gen.log", "w");
+  log_file = fopen("log.txt", "w");
+  if (log_file == NULL) {
+      perror("Error opening log file");
+      exit(1);
+  }
 
   pthread_t threads[user_count];
   struct user_info info[user_count];
@@ -223,7 +284,6 @@ int main(int argc, char *argv[]) {
   printf("Ending program\n");
 
   /* close log file */
-  //fclose(log_file);
-
+  fclose(log_file);
   return 0;
 }
