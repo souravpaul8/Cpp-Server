@@ -81,28 +81,28 @@ with open(generate_unique_filename('output'), 'w') as output_file:
         avg_time = sum(item[0] for item in request_times) / len(request_times)
 
         # Calculate the median of the first values (time values)
-        # sorted_times = sorted(request_times, key=lambda x: x[0])
-        # middle = len(sorted_times) // 2
-        # if len(sorted_times) % 2 == 0:
-        #     median_time = (sorted_times[middle - 1][0] + sorted_times[middle][0]) / 2
-        #     median_tokens = [sorted_times[middle - 1][1], sorted_times[middle][1]]
-        # else:
-        #     median_time = sorted_times[middle][0]
-        #     median_tokens = [sorted_times[middle][1]]
+        sorted_times = sorted(request_times, key=lambda x: x[0])
+        middle = len(sorted_times) // 2
+        if len(sorted_times) % 2 == 0:
+            median_time = (sorted_times[middle - 1][0] + sorted_times[middle][0]) / 2
+            median_tokens = [sorted_times[middle - 1][1], sorted_times[middle][1]]
+        else:
+            median_time = sorted_times[middle][0]
+            median_tokens = [sorted_times[middle][1]]
             
 
-        # # Calculate the 95th percentile of the first values (time values)
-        # percentile_95 = sorted_times[int(len(sorted_times) * 0.95)][0]
-        # percentile_95_tokens = [item[1] for item in sorted_times if item[0] >= percentile_95]
-        # percentile_95_tokens.sort()
+        # Calculate the 95th percentile of the first values (time values)
+        percentile_95 = sorted_times[int(len(sorted_times) * 0.95)][0]
+        percentile_95_tokens = [item[1] for item in sorted_times if item[0] >= percentile_95]
+        percentile_95_tokens.sort()
 
         # Print the corresponding second elements
         output_file.write(f"Minimum Time: {min_time[0]:.3f} ms (Token {min_time[1]})\n")
         output_file.write(f"Maximum Time: {max_time[0]:.3f} ms (Token {max_time[1]})\n")
         output_file.write(f"Average Time: {avg_time:.3f} ms\n")
-        # output_file.write(f"Median Time: {median_time:.3f} ms\n")
-        # output_file.write(f"Median Tokens: {', '.join(median_tokens)}\n")
-        # output_file.write(f"95th Percentile Time: {percentile_95:.3f} ms\n")
+        output_file.write(f"Median Time: {median_time:.3f} ms\n")
+        output_file.write(f"Median Tokens: {', '.join(median_tokens)}\n")
+        output_file.write(f"95th Percentile Time: {percentile_95:.3f} ms\n")
         # output_file.write(f"95th Percentile Tokens: {', '.join(percentile_95_tokens)}\n")
         output_file.write('\n')
 
@@ -114,28 +114,28 @@ with open(generate_unique_filename('output'), 'w') as output_file:
         avg_time = sum(item[0] for item in mainserver_times) / len(mainserver_times)
 
         # Calculate the median of the first values (time values)
-        # sorted_times = sorted(mainserver_times, key=lambda x: x[0])
-        # middle = len(sorted_times) // 2
-        # if len(sorted_times) % 2 == 0:
-        #     median_time = (sorted_times[middle - 1][0] + sorted_times[middle][0]) / 2
-        #     median_tokens = [sorted_times[middle - 1][1], sorted_times[middle][1]]
-        # else:
-        #     median_time = sorted_times[middle][0]
-        #     median_tokens = [sorted_times[middle][1]]
+        sorted_times = sorted(mainserver_times, key=lambda x: x[0])
+        middle = len(sorted_times) // 2
+        if len(sorted_times) % 2 == 0:
+            median_time = (sorted_times[middle - 1][0] + sorted_times[middle][0]) / 2
+            median_tokens = [sorted_times[middle - 1][1], sorted_times[middle][1]]
+        else:
+            median_time = sorted_times[middle][0]
+            median_tokens = [sorted_times[middle][1]]
             
 
         # # Calculate the 95th percentile of the first values (time values)
-        # percentile_95 = sorted_times[int(len(sorted_times) * 0.95)][0]
-        # percentile_95_tokens = [item[1] for item in sorted_times if item[0] >= percentile_95]
-        # percentile_95_tokens.sort()
+        percentile_95 = sorted_times[int(len(sorted_times) * 0.95)][0]
+        percentile_95_tokens = [item[1] for item in sorted_times if item[0] >= percentile_95]
+        percentile_95_tokens.sort()
 
         # Print the corresponding second elements
         output_file.write(f"Minimum Time: {min_time[0]:.3f} ms (Token {min_time[1]})\n")
         output_file.write(f"Maximum Time: {max_time[0]:.3f} ms (Token {max_time[1]})\n")
         output_file.write(f"Average Time: {avg_time:.3f} ms\n")
-        # output_file.write(f"Median Time: {median_time:.3f} ms\n")
-        # output_file.write(f"Median Tokens: {', '.join(median_tokens)}\n")
-        # output_file.write(f"95th Percentile Time: {percentile_95:.3f} ms\n")
+        output_file.write(f"Median Time: {median_time:.3f} ms\n")
+        output_file.write(f"Median Tokens: {', '.join(median_tokens)}\n")
+        output_file.write(f"95th Percentile Time: {percentile_95:.3f} ms\n")
         # output_file.write(f"95th Percentile Tokens: {', '.join(percentile_95_tokens)}\n")
         output_file.write('\n')
     
@@ -147,28 +147,28 @@ with open(generate_unique_filename('output'), 'w') as output_file:
         avg_time = sum(item[0] for item in redis_times) / len(redis_times)
 
         # Calculate the median of the first values (time values)
-        # sorted_times = sorted(redis_times, key=lambda x: x[0])
-        # middle = len(sorted_times) // 2
-        # if len(sorted_times) % 2 == 0:
-        #     median_time = (sorted_times[middle - 1][0] + sorted_times[middle][0]) / 2
-        #     median_tokens = [sorted_times[middle - 1][1], sorted_times[middle][1]]
-        # else:
-        #     median_time = sorted_times[middle][0]
-        #     median_tokens = [sorted_times[middle][1]]
+        sorted_times = sorted(redis_times, key=lambda x: x[0])
+        middle = len(sorted_times) // 2
+        if len(sorted_times) % 2 == 0:
+            median_time = (sorted_times[middle - 1][0] + sorted_times[middle][0]) / 2
+            median_tokens = [sorted_times[middle - 1][1], sorted_times[middle][1]]
+        else:
+            median_time = sorted_times[middle][0]
+            median_tokens = [sorted_times[middle][1]]
             
 
         # # Calculate the 95th percentile of the first values (time values)
-        # percentile_95 = sorted_times[int(len(sorted_times) * 0.95)][0]
-        # percentile_95_tokens = [item[1] for item in sorted_times if item[0] >= percentile_95]
-        # percentile_95_tokens.sort()
+        percentile_95 = sorted_times[int(len(sorted_times) * 0.95)][0]
+        percentile_95_tokens = [item[1] for item in sorted_times if item[0] >= percentile_95]
+        percentile_95_tokens.sort()
 
         # Print the corresponding second elements
         output_file.write(f"Minimum Time: {min_time[0]:.3f} ms (Token {min_time[1]})\n")
         output_file.write(f"Maximum Time: {max_time[0]:.3f} ms (Token {max_time[1]})\n")
         output_file.write(f"Average Time: {avg_time:.3f} ms\n")
-        # output_file.write(f"Median Time: {median_time:.3f} ms\n")
-        # output_file.write(f"Median Tokens: {', '.join(median_tokens)}\n")
-        # output_file.write(f"95th Percentile Time: {percentile_95:.3f} ms\n")
+        output_file.write(f"Median Time: {median_time:.3f} ms\n")
+        output_file.write(f"Median Tokens: {', '.join(median_tokens)}\n")
+        output_file.write(f"95th Percentile Time: {percentile_95:.3f} ms\n")
         # output_file.write(f"95th Percentile Tokens: {', '.join(percentile_95_tokens)}\n")
         output_file.write('\n')
 
@@ -180,28 +180,28 @@ with open(generate_unique_filename('output'), 'w') as output_file:
         avg_time = sum(item[0] for item in discovery_times) / len(discovery_times)
 
         # Calculate the median of the first values (time values)
-        # sorted_times = sorted(discovery_times, key=lambda x: x[0])
-        # middle = len(sorted_times) // 2
-        # if len(sorted_times) % 2 == 0:
-        #     median_time = (sorted_times[middle - 1][0] + sorted_times[middle][0]) / 2
-        #     median_tokens = [sorted_times[middle - 1][1], sorted_times[middle][1]]
-        # else:
-        #     median_time = sorted_times[middle][0]
-        #     median_tokens = [sorted_times[middle][1]]
+        sorted_times = sorted(discovery_times, key=lambda x: x[0])
+        middle = len(sorted_times) // 2
+        if len(sorted_times) % 2 == 0:
+            median_time = (sorted_times[middle - 1][0] + sorted_times[middle][0]) / 2
+            median_tokens = [sorted_times[middle - 1][1], sorted_times[middle][1]]
+        else:
+            median_time = sorted_times[middle][0]
+            median_tokens = [sorted_times[middle][1]]
             
 
         # Calculate the 95th percentile of the first values (time values)
-        # percentile_95 = sorted_times[int(len(sorted_times) * 0.95)][0]
-        # percentile_95_tokens = [item[1] for item in sorted_times if item[0] >= percentile_95]
-        # percentile_95_tokens = sorted(map(int, percentile_95_tokens))
+        percentile_95 = sorted_times[int(len(sorted_times) * 0.95)][0]
+        percentile_95_tokens = [item[1] for item in sorted_times if item[0] >= percentile_95]
+        percentile_95_tokens = sorted(map(int, percentile_95_tokens))
 
         # Print the corresponding second elements
         output_file.write(f"Minimum Time: {min_time[0]:.3f} ms (Token {min_time[1]})\n")
         output_file.write(f"Maximum Time: {max_time[0]:.3f} ms (Token {max_time[1]})\n")
         output_file.write(f"Average Time: {avg_time:.3f} ms\n")
-        # output_file.write(f"Median Time: {median_time:.3f} ms\n")
-        # output_file.write(f"Median Tokens: {', '.join(median_tokens)}\n")
-        # output_file.write(f"95th Percentile Time: {percentile_95:.3f} ms\n")
+        output_file.write(f"Median Time: {median_time:.3f} ms\n")
+        output_file.write(f"Median Tokens: {', '.join(median_tokens)}\n")
+        output_file.write(f"95th Percentile Time: {percentile_95:.3f} ms\n")
         # output_file.write(f"95th Percentile Tokens: {', '.join(map(str, percentile_95_tokens))}\n")
         output_file.write('\n')
 

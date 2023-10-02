@@ -11,6 +11,7 @@ RUN apt-get install -y build-essential
 RUN apt-get install -y libcpprest-dev
 RUN apt-get install -y libboost-all-dev
 RUN apt-get install -y libssl-dev
+RUN apt-get install -y python3-matplotlib
 
 COPY / $HOME/src
 EXPOSE 80
