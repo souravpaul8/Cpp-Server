@@ -13,6 +13,8 @@ RUN apt-get install -y libboost-all-dev
 RUN apt-get install -y libssl-dev
 RUN apt-get install -y python3
 RUN apt-get install -y python3-matplotlib
+RUN apt-get install -y curl
+
 COPY / $HOME/src
 EXPOSE 80
 CMD ["sleep","infinity"]

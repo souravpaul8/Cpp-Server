@@ -13,6 +13,7 @@ RUN apt-get install -y libboost-all-dev
 RUN apt-get install -y libssl-dev
 RUN apt-get install -y redis-server
 RUN apt-get install -y libhiredis-dev
+RUN apt-get install -y curl
 
 COPY / $HOME/src
 EXPOSE 80
